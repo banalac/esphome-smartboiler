@@ -5,6 +5,7 @@
 #include <cmath>
 #include <cstring>
 #include <string>
+#include <cctype>
 
 #ifdef USE_TIME
 #include "esphome/components/time/real_time_clock.h"
@@ -1114,8 +1115,13 @@ void SmartBoilerPinInput::control(const float value) {
  * Modes SMART and MANUAL are converted to SMART_HDO/HDO in case
  * the water heater is configured to use HDO internal decoder.
  */
-optional<uint8_t> SmartBoiler::convert_action_to_mode(const std::string &payload) {
+/**optional<uint8_t> SmartBoiler::convert_action_to_mode(const std::string &payload) {
   auto modeStr = str_upper_case(payload);
+*/
+  optional<uint8_t> SmartBoiler::convert_action_to_mode(const std::string &payload) {
+    std::string modeStr = payload;
+    std::transform(modeStr.begin(), modeStr.end(), modeStr.begin(),
+                   [](unsigned char c) { return std::toupper(c); });
 
   if (modeStr == MODE_ANTIFREEZE)
     return Mode::ANTIFREEZE;
